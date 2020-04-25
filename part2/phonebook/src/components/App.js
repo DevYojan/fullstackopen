@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import Input from "./Input";
 import AddForm from './AddForm';
+import Persons from './Persons';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchValue, setSearchValue] = useState("");
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data);
+      });
+  }, []);
+
+  const handleSearch = (e) => setSearchValue(e.target.value);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -24,7 +30,7 @@ const App = () => {
       if (newName.toLowerCase() === person.name.toLowerCase()) {
         alert(`${newName} already exists in the phonebook`);
         duplicate = true;
-        return false;
+        return;
       }
     });
 
@@ -41,8 +47,6 @@ const App = () => {
     setNewName("");
     setNewNumber("");
   }
-
-  const handleSearch = (e) => setSearchValue(e.target.value);
 
   function handleChange(e) {
     if (e.target.name === "name") {
@@ -69,19 +73,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
       <Input label={'search filter'} value={searchValue} handleInput={handleSearch} />
-      <h2>add a new</h2>
+
+      <h2>Add a new</h2>
+
       <AddForm handleSubmit={handleSubmit}
         handleChange={handleChange} name={newName} number={newNumber}
       />
+
       <h2>Numbers</h2>
-      <ul>
-        {data.map((person) => (
-          <li>
-            {person.name} {person.number}
-          </li>
-        ))}
-      </ul>
+
+      <Persons persons={data} />
     </div>
   );
 };
