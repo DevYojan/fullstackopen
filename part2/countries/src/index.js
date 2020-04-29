@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import whyDidYouRender from "@welldone-software/why-did-you-render";
 import axios from "axios";
 import Search from "./components/Search";
 import Result from "./components/Result";
-
-whyDidYouRender(React, {
-  collapseGroups: true,
-  include: [/.*/],
-  logOnDifferentValues: true,
-  trackHooks: true,
-});
-
-// App.whyDidYouRender = true;
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");

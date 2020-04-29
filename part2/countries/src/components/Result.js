@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import CountryDetail from "./CountryDetail";
 
 const Result = ({ result }) => {
+  const [selectedCountry, setSelectedCountry] = useState([]);
+
   if (result.length === 0) {
     return null;
   }
@@ -9,32 +12,25 @@ const Result = ({ result }) => {
     return "Too many matches. Specify another filter.";
   }
 
-  if (result.length === 1) {
-    let country = result[0];
-
-    return (
-      <div>
-        <h2>{country.name}</h2>
-        Capital : {country.capital} <br />
-        Population : {country.population}
-        <h3>Languages</h3>
-        <ul>
-          {country.languages.map((language) => (
-            <li key={language.iso639_1}>{language.name}</li>
-          ))}
-        </ul>
-        <img src={country.flag} alt={country.name} width="300" height="300" />
-      </div>
-    );
-  }
+  const handleShowButton = (country) => {
+    setSelectedCountry(country);
+  };
 
   return (
     <div>
       {result.map((country) => (
         <React.Fragment key={country.numericCode}>
-          {country.name} <br />
+          {country.name}
+          <button
+            name={country.numericCode}
+            onClick={() => handleShowButton(country)}
+          >
+            show
+          </button>
+          <br />
         </React.Fragment>
       ))}
+      <CountryDetail country={selectedCountry} />
     </div>
   );
 };
