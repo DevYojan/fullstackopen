@@ -1,20 +1,9 @@
-import React, { useState } from "react";
-import CountryDetail from "./CountryDetail";
+import React from "react";
 
-const Result = ({ result }) => {
-  const [selectedCountry, setSelectedCountry] = useState([]);
-
-  if (result.length === 0) {
-    return null;
-  }
-
+const Result = ({ result, showDetail }) => {
   if (result.length > 10) {
     return "Too many matches. Specify another filter.";
   }
-
-  const handleShowButton = (country) => {
-    setSelectedCountry(country);
-  };
 
   return (
     <div>
@@ -23,14 +12,13 @@ const Result = ({ result }) => {
           {country.name}
           <button
             name={country.numericCode}
-            onClick={() => handleShowButton(country)}
+            onClick={() => showDetail(country)}
           >
             show
           </button>
           <br />
         </React.Fragment>
       ))}
-      <CountryDetail country={selectedCountry} />
     </div>
   );
 };

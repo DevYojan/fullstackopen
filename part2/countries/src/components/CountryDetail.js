@@ -1,7 +1,7 @@
 import React from "react";
 
-const CountryDetail = ({ country }) => {
-  if (country.length === 0) {
+const CountryDetail = ({ country, weather }) => {
+  if (country === null) {
     return null;
   }
 
@@ -16,7 +16,17 @@ const CountryDetail = ({ country }) => {
           <li key={language.iso639_1}>{language.name}</li>
         ))}
       </ul>
-      <img src={country.flag} alt={country.name} width="300" height="300" />
+      <img src={country.flag} alt={country.name} width="150" height="150" />
+      {weather && (
+        <div>
+          <h3>Weather in {country.capital}</h3>
+          <h4>Temperature:{weather.temperature} celsius</h4>
+          <img
+            src={weather.weather_icons[0]}
+            alt={weather.weather_descriptions[0]}
+          />
+        </div>
+      )}
     </div>
   );
 };

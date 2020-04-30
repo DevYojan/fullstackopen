@@ -3,13 +3,29 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import Search from "./components/Search";
 import Result from "./components/Result";
+import CountryDetail from "./components/CountryDetail";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState([]);
+  const [result, setResult] = useState([]);
+  const [country, setSelectedCountry] = useState(null);
+  const [weather, setWeather] = useState();
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+    let searchedCountries = [];
+    searchedCountries = countries.filter((country) => {
+      return country.name.toLowerCase().includes(e.target.value.toLowerCase());
+    });
+
+    if (searchedCountries.length === 1) {
+      setSelectedCountry(searchedCountries[0]);
+    }
+    if (searchedCountries.length > 1) {
+      setResult(searchedCountries);
+      setSelectedCountry(null);
+    }
   };
 
   useEffect(() => {
@@ -18,13 +34,25 @@ const App = () => {
     });
   }, []);
 
-  let searchedCountries = [];
+  useEffect(() => {
+    if (country !== null) {
+      const API_KEY = process.env.REACT_APP_API_KEY;
 
-  if (searchTerm !== "") {
-    searchedCountries = countries.filter((country) => {
-      return country.name.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-  }
+      axios
+        .get(
+          `http://api.weatherstack.com/current?access_key=${API_KEY}&query=${country.capital}`
+        )
+        .then((response) => setWeather(response.data.current));
+    }
+  }, [country]);
+
+  const showDetail = (selectedCountry) => {
+    if (country === selectedCountry) {
+      return;
+    }
+
+    setSelectedCountry(selectedCountry);
+  };
 
   return (
     <div>
@@ -33,7 +61,8 @@ const App = () => {
         handleSearch={handleSearch}
         searchValue={searchTerm}
       />
-      <Result result={searchedCountries} />
+      <Result result={result} showDetail={showDetail} />
+      <CountryDetail country={country} weather={weather} />
     </div>
   );
 };
