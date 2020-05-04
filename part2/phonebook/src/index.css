@@ -6,3 +6,12 @@
   background: greenyellow;
   font-size: 1.3em;
 }
+
+.error {
+  padding: 0;
+  margin-bottom: .5em;
+  text-align: center;
+  border: 1px solid rgb(172, 182, 172);
+  background: rgb(199, 61, 61);
+  font-size: 1.3em;
+}

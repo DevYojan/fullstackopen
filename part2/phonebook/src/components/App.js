@@ -45,9 +45,23 @@ const App = () => {
 					number: newNumber,
 				};
 
-				personsService.update(duplicate.id, modifiedObj).then((data) => {
-					setPersons(persons.filter((p) => p.id !== duplicate.id).concat(data));
-				});
+				personsService
+					.update(duplicate.id, modifiedObj)
+					.then((data) => {
+						setPersons(
+							persons.filter((p) => p.id !== duplicate.id).concat(data)
+						);
+					})
+					.catch(() => {
+						setPersons(persons.filter(p => p.id !== duplicate.id));
+
+						setNotification({
+							message: `Information of ${modifiedObj.name} has already been deleted from server.`,
+							type: 'error',
+						});
+
+						setTimeout(() => setNotification(null), 5000);
+					});
 
 				setNewName('');
 				setNewNumber('');
