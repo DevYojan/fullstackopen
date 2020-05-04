@@ -3,6 +3,7 @@ import personsService from './services/personsService';
 import Input from './Input';
 import AddForm from './AddForm';
 import Persons from './Persons';
+import Notification from './Notification';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -10,6 +11,7 @@ const App = () => {
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [searchValue, setSearchValue] = useState('');
+	const [notification, setNotification] = useState(null);
 
 	useEffect(() => {
 		personsService.getAll().then((persons) => {
@@ -63,6 +65,11 @@ const App = () => {
 			setPersons(persons.concat(data));
 		});
 
+		setNotification({
+			message: `Added ${newPerson.name}.`,
+			type: 'success',
+		});
+		setTimeout(() => setNotification(null), 5000);
 		setNewName('');
 		setNewNumber('');
 	}
@@ -99,7 +106,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-
+			<Notification notification={notification} />
 			<Input
 				label={'search filter'}
 				value={searchValue}
