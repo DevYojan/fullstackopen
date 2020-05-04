@@ -1,4 +1,5 @@
 import React from "react";
+import Weather from "./Weather";
 
 const CountryDetail = ({ country, weather }) => {
   if (country === null) {
@@ -17,16 +18,7 @@ const CountryDetail = ({ country, weather }) => {
         ))}
       </ul>
       <img src={country.flag} alt={country.name} width="150" height="150" />
-      {weather && (
-        <div>
-          <h3>Weather in {country.capital}</h3>
-          <h4>Temperature:{weather.temperature} celsius</h4>
-          <img
-            src={weather.weather_icons[0]}
-            alt={weather.weather_descriptions[0]}
-          />
-        </div>
-      )}
+      <Weather capital={country.capital} weather={weather} />
     </div>
   );
 };

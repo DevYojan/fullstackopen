@@ -25,6 +25,7 @@ const App = () => {
     if (searchedCountries.length > 1) {
       setResult(searchedCountries);
       setSelectedCountry(null);
+      setWeather(null);
     }
   };
 
