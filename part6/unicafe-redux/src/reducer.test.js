@@ -48,7 +48,7 @@ describe('unicafe reducer', () => {
     });
   });
 
-  test('reset works', () => {
+  test('reset work', () => {
     const action = {
       type: 'ZERO',
     };
