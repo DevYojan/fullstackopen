@@ -7,6 +7,22 @@ const anecdotesAtStart = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
 ];
 
+export const upvote = (id) => {
+  return {
+    type: 'UPVOTE',
+    data: {
+      id: id,
+    },
+  };
+};
+
+export const addAnecdote = (text) => {
+  return {
+    type: 'ADD_ANECDOTE',
+    data: text,
+  };
+};
+
 const getId = () => (100000 * Math.random()).toFixed(0);
 
 const asObject = (anecdote) => {
@@ -35,7 +51,6 @@ const reducer = (state = initialState, action) => {
         .sort((a, b) => b.votes - a.votes);
 
     default:
-      console.log('in the default');
       return state.sort((a, b) => b.votes - a.votes);
   }
 };
