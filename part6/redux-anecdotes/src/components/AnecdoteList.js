@@ -4,7 +4,17 @@ import { upvote } from '../reducers/anecdoteReducer';
 import { setNotification, removeNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state.anecdotes);
+  const filterKey = useSelector((state) => state.filterKey);
+
+  const anecdotes = useSelector((state) => {
+    if (state.filterKey !== null) {
+      return state.anecdotes.filter(
+        (el) => el.content.toLowerCase().indexOf(filterKey.toLowerCase()) !== -1
+      );
+    }
+
+    return state.anecdotes;
+  });
   const dispatch = useDispatch();
 
   const vote = (anecdote) => {
