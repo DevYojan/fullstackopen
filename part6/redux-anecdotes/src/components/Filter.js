@@ -13,8 +13,11 @@ const Filter = () => {
   };
 
   return (
-    <div style={style}>
-      filter <input value={filter} onChange={handleChange} />
+    <div className='ui form' style={style}>
+      <div className='field'>
+        <label>Filter</label>
+        <input value={filter} onChange={handleChange} />
+      </div>
     </div>
   );
 };

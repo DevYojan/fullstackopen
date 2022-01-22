@@ -14,10 +14,10 @@ export const initAnecdotes = (anecdotes) => {
   };
 };
 
-export const addAnecdote = (text) => {
+export const addAnecdote = (data) => {
   return {
     type: 'ADD_ANECDOTE',
-    data: text,
+    data,
   };
 };
 
@@ -37,7 +37,7 @@ const reducer = (state = [], action) => {
       return action.data;
 
     case 'ADD_ANECDOTE':
-      return [...state, asObject(action.data)].sort((a, b) => b.votes - a.votes);
+      return [...state, action.data].sort((a, b) => b.votes - a.votes);
 
     case 'UPVOTE':
       const anecdoteToChange = state.find((n) => n.id === action.data.id);

@@ -1,14 +1,22 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { addAnecdote } from '../reducers/anecdoteReducer';
+import { addAnecdote, getId } from '../reducers/anecdoteReducer';
 import { removeNotification, setNotification } from '../reducers/notificationReducer';
+import anecDoteService from '../services/anecdote';
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
-  const createAnecdote = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(addAnecdote(e.target.anecdote.value));
+
+    const newAnecdote = await anecDoteService.createAnecdote({
+      content: e.target.anecdote.value,
+      id: 100000 * Math.random().toFixed(0),
+      votes: 0,
+    });
+
+    dispatch(addAnecdote(newAnecdote));
     dispatch(setNotification(`'${e.target.anecdote.value}' added successfully.`));
     setTimeout(() => dispatch(removeNotification()), 5000);
     e.target.anecdote.value = '';
@@ -16,12 +24,12 @@ const AnecdoteForm = () => {
 
   return (
     <div>
-      <h2>create new</h2>
-      <form onSubmit={createAnecdote}>
-        <div>
+      <h2>Create new Anecdote</h2>
+      <form className='ui form' onSubmit={handleSubmit}>
+        <div className='field'>
           <input name='anecdote' />
         </div>
-        <button>Create</button>
+        <button className='ui button primary'>Create</button>
       </form>
     </div>
   );

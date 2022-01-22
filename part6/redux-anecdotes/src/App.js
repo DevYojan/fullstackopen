@@ -17,7 +17,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className='ui text container'>
       <h2>Anecdotes</h2>
       <Notification />
       <Filter />

@@ -26,11 +26,13 @@ const AnecdoteList = () => {
   return (
     <div>
       {anecdotes.map((anecdote) => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
+        <div className='ui segment' key={anecdote.id}>
+          <h4 className='ui header'>{anecdote.content}</h4>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote)}>vote</button>
+            <button className='ui mini button' onClick={() => vote(anecdote)}>
+              vote
+            </button>
           </div>
         </div>
       ))}
