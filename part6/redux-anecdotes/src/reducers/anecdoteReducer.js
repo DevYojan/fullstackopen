@@ -19,10 +19,18 @@ export const initAnecdotes = () => {
   };
 };
 
-export const addAnecdote = (data) => {
-  return {
-    type: 'ADD_ANECDOTE',
-    data,
+export const addAnecdote = (anecdote) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecDoteService.createAnecdote({
+      content: anecdote,
+      id: 100000 * Math.random().toFixed(0),
+      votes: 0,
+    });
+
+    dispatch({
+      type: 'ADD_ANECDOTE',
+      data: newAnecdote,
+    });
   };
 };
 
