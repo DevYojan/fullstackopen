@@ -24,9 +24,10 @@ const AnecdoteForm = () => {
 
   return (
     <div>
-      <h2>Create new Anecdote</h2>
       <form className='ui form' onSubmit={handleSubmit}>
         <div className='field'>
+          <label>Create new Anecdote</label>
+
           <input name='anecdote' />
         </div>
         <button className='ui button primary'>Create</button>
