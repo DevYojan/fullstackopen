@@ -1,45 +1,64 @@
 import React, { useState } from 'react';
-import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom';
+import { Link, Switch, Route, useRouteMatch, BrowserRouter as Router } from 'react-router-dom';
 
 const Menu = (props) => {
   const padding = {
     paddingRight: 10,
   };
+
+  const match = useRouteMatch('/anecdotes/:id');
+  const anecdote = match
+    ? props.anecdotes.find((anecdote) => anecdote.id === match.params.id)
+    : null;
+
   return (
     <div>
-      <Router>
-        <Link to='/about' style={padding}>
-          About
-        </Link>
-        <Link to='/createNew' style={padding}>
-          Create New
-        </Link>
-        <Link to='/anecdotes' style={padding}>
-          Anecdotes
-        </Link>
+      <Link to='/about' style={padding}>
+        About
+      </Link>
+      <Link to='/createNew' style={padding}>
+        Create New
+      </Link>
+      <Link to='/anecdotes' style={padding}>
+        Anecdotes
+      </Link>
 
-        <Switch>
-          <Route path='/about'>
-            <About />
-          </Route>
-          <Route path='/createNew'>
-            <CreateNew addNew={props.addNew} />
-          </Route>
-          <Route path='/'>
-            <AnecdoteList anecdotes={props.anecdotes} />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route path='/anecdotes/:id'>
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path='/about'>
+          <About />
+        </Route>
+        <Route path='/createNew'>
+          <CreateNew addNew={props.addNew} />
+        </Route>
+        <Route path='/'>
+          <AnecdoteList anecdotes={props.anecdotes} />
+        </Route>
+      </Switch>
     </div>
   );
 };
+
+const Anecdote = ({ anecdote }) => (
+  <div>
+    <h3>{anecdote.content}</h3>
+    <p>has {anecdote.votes} votes</p>
+    <p>
+      For more info see <a href={anecdote.info}>{anecdote.info}</a>
+    </p>
+  </div>
+);
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <Link key={anecdote.id} to={`/anecdotes/${anecdote.id}`}>
+          <li>{anecdote.content}</li>
+        </Link>
       ))}
     </ul>
   </div>
@@ -154,9 +173,11 @@ const App = () => {
 
   return (
     <div>
-      <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew} />
-      <Footer />
+      <Router>
+        <h1>Software anecdotes</h1>
+        <Menu anecdotes={anecdotes} addNew={addNew} />
+        <Footer />
+      </Router>
     </div>
   );
 };
