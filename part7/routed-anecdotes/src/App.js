@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Link, Switch, Route, useRouteMatch, BrowserRouter as Router } from 'react-router-dom';
+import {
+  Link,
+  Switch,
+  Route,
+  useRouteMatch,
+  useHistory,
+  BrowserRouter as Router,
+} from 'react-router-dom';
 
 const Menu = (props) => {
   const padding = {
@@ -31,7 +38,7 @@ const Menu = (props) => {
           <About />
         </Route>
         <Route path='/createNew'>
-          <CreateNew addNew={props.addNew} />
+          <CreateNew addNew={props.addNew} setNotification={props.setNotification} />
         </Route>
         <Route path='/'>
           <AnecdoteList anecdotes={props.anecdotes} />
@@ -101,6 +108,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('');
   const [info, setInfo] = useState('');
 
+  const history = useHistory();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
@@ -109,6 +118,13 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+
+    props.setNotification(`${content} by ${author} has been added successfully.`);
+    setTimeout(() => {
+      props.setNotification('');
+    }, 10000);
+
+    history.push('/');
   };
 
   return (
@@ -131,6 +147,15 @@ const CreateNew = (props) => {
       </form>
     </div>
   );
+};
+
+const Notification = ({ notification }) => {
+  const style = {
+    padding: 1,
+    backgroundColor: 'green',
+  };
+
+  return <div style={style}>{notification}</div>;
 };
 
 const App = () => {
@@ -174,8 +199,9 @@ const App = () => {
   return (
     <div>
       <Router>
+        {notification ? <Notification notification={notification} /> : null}
         <h1>Software anecdotes</h1>
-        <Menu anecdotes={anecdotes} addNew={addNew} />
+        <Menu anecdotes={anecdotes} addNew={addNew} setNotification={setNotification} />
         <Footer />
       </Router>
     </div>
