@@ -60,7 +60,7 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch {
-      dispatch(setNotification('Incorrect credentials'));
+      dispatch(setNotification('Incorrect credentials', 'error'));
       setTimeout(() => {
         dispatch(removeNotification());
       }, 5000);
@@ -120,7 +120,10 @@ const App = () => {
 
     if (response.status !== 204) {
       dispatch(
-        setNotification('Oops an error occured while deleting the blog')
+        setNotification(
+          'Oops an error occured while deleting the blog',
+          'error'
+        )
       );
       setTimeout(() => {
         dispatch(removeNotification());
