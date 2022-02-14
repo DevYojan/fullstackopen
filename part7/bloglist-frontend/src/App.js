@@ -52,18 +52,26 @@ const App = () => {
       blogService.setToken(response.data.token);
       window.localStorage.setItem('blogUser', JSON.stringify(response.data));
 
-      dispatch(setNotification(`${username} logged in successfully!`));
-      setTimeout(() => {
+      const timerID = setTimeout(() => {
         dispatch(removeNotification());
       }, 5000);
+
+      dispatch(
+        setNotification(
+          `${username} logged in successfully!`,
+          'success',
+          timerID
+        )
+      );
 
       setUsername('');
       setPassword('');
     } catch {
-      dispatch(setNotification('Incorrect credentials', 'error'));
-      setTimeout(() => {
+      const timerID = setTimeout(() => {
         dispatch(removeNotification());
       }, 5000);
+
+      dispatch(setNotification('Incorrect credentials', 'error', timerID));
     }
   };
 
@@ -72,10 +80,11 @@ const App = () => {
     window.localStorage.removeItem('blogUser');
     setUser(null);
 
-    dispatch(setNotification(`${username} logged out.`));
-    setTimeout(() => {
+    const timerID = setTimeout(() => {
       dispatch(removeNotification());
     }, 5000);
+
+    dispatch(setNotification('logged out successfully!', 'success', timerID));
   };
 
   const createBlog = async (blogData) => {
@@ -83,10 +92,17 @@ const App = () => {
 
     blogFormRef.current.toggleVisibility();
     setBlogs([...blogs, newBlog]);
-    dispatch(setNotification(`${newBlog.title} added successfully!`));
-    setTimeout(() => {
+    const timerID = setTimeout(() => {
       dispatch(removeNotification());
     }, 5000);
+
+    dispatch(
+      setNotification(
+        `${newBlog.title} created successfully`,
+        'success',
+        timerID
+      )
+    );
   };
 
   const handleLike = async (blogToLike) => {
@@ -113,28 +129,38 @@ const App = () => {
     temp.sort((a, b) => b.likes - a.likes);
 
     setBlogs(temp);
+    const timerID = setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+
+    dispatch(
+      setNotification(`you liked ${blogToLike.title}!`, 'success', timerID)
+    );
   };
 
   const deleteBlog = async (id) => {
     const response = await blogService.remove(id);
 
     if (response.status !== 204) {
-      dispatch(
-        setNotification(
-          'Oops an error occured while deleting the blog',
-          'error'
-        )
-      );
-      setTimeout(() => {
+      const timerID = setTimeout(() => {
         dispatch(removeNotification());
       }, 5000);
+
+      dispatch(
+        setNotification(
+          'An error occured while deleting the blog',
+          'success',
+          timerID
+        )
+      );
     }
 
     setBlogs(blogs.filter((blog) => blog.id !== id));
-    dispatch(setNotification('Blog deleted successfully'));
-    setTimeout(() => {
+    const timerID = setTimeout(() => {
       dispatch(removeNotification());
     }, 5000);
+
+    dispatch(setNotification('Blog deleted successfully', 'success', timerID));
   };
 
   const loginForm = () => (
