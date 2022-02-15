@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
-import Togglable from './components/Togglable';
 import Notification from './components/Notification';
 
 import blogService from './services/blogs';
@@ -12,14 +11,10 @@ import {
   setNotification,
 } from './store/reducers/notificationReducer';
 import { useDispatch } from 'react-redux';
+import { initBlog } from './store/reducers/blogReducer';
+import { useSelector } from 'react-redux';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');
-
-  const blogFormRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,9 +24,15 @@ const App = () => {
       blogs.map((blog) => {
         blog.visible = false;
       });
-      setBlogs(blogs);
+      dispatch(initBlog(blogs));
     })();
-  }, []);
+  }, [dispatch]);
+
+  const blogs = useSelector((state) => state.blogs);
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
 
   //Checking localStorage for saved logins.
   useEffect(() => {
@@ -85,24 +86,6 @@ const App = () => {
     }, 5000);
 
     dispatch(setNotification('logged out successfully!', 'success', timerID));
-  };
-
-  const createBlog = async (blogData) => {
-    const newBlog = await blogService.create(blogData);
-
-    blogFormRef.current.toggleVisibility();
-    setBlogs([...blogs, newBlog]);
-    const timerID = setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
-
-    dispatch(
-      setNotification(
-        `${newBlog.title} created successfully`,
-        'success',
-        timerID
-      )
-    );
   };
 
   const handleLike = async (blogToLike) => {
@@ -186,12 +169,6 @@ const App = () => {
     </form>
   );
 
-  const createBlogForm = () => (
-    <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-      <BlogForm createBlog={createBlog} />
-    </Togglable>
-  );
-
   const showBlogs = () => (
     <div>
       {blogs.map((blog) => (
@@ -219,8 +196,8 @@ const App = () => {
         </p>
       )}
       {!user && loginForm()}
-      {user && createBlogForm()}
-      {user && showBlogs()}
+      {user && <BlogForm />}
+      {user && blogs && showBlogs()}
     </div>
   );
 };
