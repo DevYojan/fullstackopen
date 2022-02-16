@@ -6,13 +6,15 @@ import Notification from './components/Notification';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   removeNotification,
   setNotification,
 } from './store/reducers/notificationReducer';
-import { useDispatch } from 'react-redux';
-import { initBlog, likeBlog } from './store/reducers/blogReducer';
-import { useSelector } from 'react-redux';
+import { initBlog } from './store/reducers/blogReducer';
+import { login, logout } from './store/reducers/userReducer';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -31,24 +33,24 @@ const App = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');
-
   //Checking localStorage for saved logins.
   useEffect(() => {
     const user = JSON.parse(window.localStorage.getItem('blogUser'));
 
     if (user) {
-      setUser(user);
+      dispatch(login(user));
       blogService.setToken(user.token);
     }
   }, []);
+
+  const user = useSelector((state) => state.user);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
       const response = await loginService.login({ username, password });
-      setUser(response.data);
+      dispatch(login(response.data));
       blogService.setToken(response.data.token);
       window.localStorage.setItem('blogUser', JSON.stringify(response.data));
 
@@ -78,7 +80,7 @@ const App = () => {
   const handleLogout = (event) => {
     event.preventDefault();
     window.localStorage.removeItem('blogUser');
-    setUser(null);
+    dispatch(logout());
 
     const timerID = setTimeout(() => {
       dispatch(removeNotification());
