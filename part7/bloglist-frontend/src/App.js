@@ -87,31 +87,6 @@ const App = () => {
     dispatch(setNotification('logged out successfully!', 'success', timerID));
   };
 
-  const deleteBlog = async (id) => {
-    const response = await blogService.remove(id);
-
-    if (response.status !== 204) {
-      const timerID = setTimeout(() => {
-        dispatch(removeNotification());
-      }, 5000);
-
-      dispatch(
-        setNotification(
-          'An error occured while deleting the blog',
-          'success',
-          timerID
-        )
-      );
-    }
-
-    setBlogs(blogs.filter((blog) => blog.id !== id));
-    const timerID = setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
-
-    dispatch(setNotification('Blog deleted successfully', 'success', timerID));
-  };
-
   const loginForm = () => (
     <form action="">
       <h2>Login</h2>
@@ -138,13 +113,7 @@ const App = () => {
   const showBlogs = () => (
     <div>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          deleteBlog={deleteBlog}
-          userId={user.id}
-          className="blog"
-        />
+        <Blog key={blog.id} blog={blog} userId={user.id} className="blog" />
       ))}
     </div>
   );

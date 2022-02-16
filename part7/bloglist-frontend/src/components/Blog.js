@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import blogService from '../services/blogs';
-import { likeBlog } from '../store/reducers/blogReducer';
+import { likeBlog, deleteBlog } from '../store/reducers/blogReducer';
 import {
   removeNotification,
   setNotification,
 } from '../store/reducers/notificationReducer';
 
-const Blog = ({ blog, deleteBlog, userId }) => {
+const Blog = ({ blog, userId }) => {
   const [visibility, setVisibility] = useState(false);
   const dispatch = useDispatch();
 
@@ -34,20 +34,44 @@ const Blog = ({ blog, deleteBlog, userId }) => {
     );
   };
 
-  const showOrHide = { display: visibility ? '' : 'none' };
-
-  const toggleVisibility = () => {
-    setVisibility(!visibility);
-  };
-
-  const handleClick = (blog) => {
+  const handleDelete = async (blog) => {
     const result = window.confirm(
       `Remove blog '${blog.title}' by ${blog.author}?`
     );
 
-    if (result) {
-      deleteBlog(blog.id);
+    if (!result) {
+      return;
     }
+
+    const response = await blogService.remove(blog.id);
+
+    if (response.status !== 204) {
+      const timerID = setTimeout(() => {
+        dispatch(removeNotification());
+      }, 5000);
+
+      dispatch(
+        setNotification(
+          'An error occured while deleting the blog',
+          'success',
+          timerID
+        )
+      );
+    }
+
+    dispatch(deleteBlog(blog.id));
+
+    const timerID = setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+
+    dispatch(setNotification('Blog deleted successfully', 'success', timerID));
+  };
+
+  const showOrHide = { display: visibility ? '' : 'none' };
+
+  const toggleVisibility = () => {
+    setVisibility(!visibility);
   };
 
   return (
@@ -67,7 +91,7 @@ const Blog = ({ blog, deleteBlog, userId }) => {
         </p>
         <p>Url: {blog.url}</p>
         {blog.user.id === userId && (
-          <button onClick={() => handleClick(blog)} className="deleteButton">
+          <button onClick={() => handleDelete(blog)} className="deleteButton">
             Delete
           </button>
         )}

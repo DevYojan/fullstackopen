@@ -23,12 +23,21 @@ export const likeBlog = (blog) => {
   };
 };
 
+export const deleteBlog = (blogId) => {
+  return {
+    type: 'DELETE_BLOG',
+    blog: blogId,
+  };
+};
+
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'INIT_BLOG':
       return action.blog.sort((a, b) => b.likes - a.likes);
+
     case 'CREATE_BLOG':
       return [...state, action.blog].sort((a, b) => b.likes - a.likes);
+
     case 'LIKE_BLOG':
       const replacedState = state.map((blog) => {
         if (blog.id === action.blog.id) {
@@ -38,6 +47,9 @@ const blogReducer = (state = [], action) => {
         }
       });
       return replacedState.sort((a, b) => b.likes - a.likes);
+
+    case 'DELETE_BLOG':
+      return state.filter((blog) => blog.id !== action.blog);
 
     default:
       return state.sort((a, b) => b.likes - a.likes);
