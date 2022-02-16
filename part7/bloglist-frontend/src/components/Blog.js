@@ -1,7 +1,38 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import blogService from '../services/blogs';
+import { likeBlog } from '../store/reducers/blogReducer';
+import {
+  removeNotification,
+  setNotification,
+} from '../store/reducers/notificationReducer';
 
-const Blog = ({ blog, handleLike, deleteBlog, userId }) => {
+const Blog = ({ blog, deleteBlog, userId }) => {
   const [visibility, setVisibility] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleLike = async (blogToLike) => {
+    const increasedLikeBlog = {
+      ...blogToLike,
+      likes: blogToLike.likes + 1,
+    };
+
+    const modifiedBlog = await blogService.like(increasedLikeBlog);
+    const blogUserID = modifiedBlog.user;
+    delete modifiedBlog.user;
+    modifiedBlog.user = {};
+    modifiedBlog.user.id = blogUserID;
+
+    dispatch(likeBlog(modifiedBlog));
+
+    const timerID = setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+
+    dispatch(
+      setNotification(`you liked ${blogToLike.title}!`, 'success', timerID)
+    );
+  };
 
   const showOrHide = { display: visibility ? '' : 'none' };
 
@@ -35,7 +66,7 @@ const Blog = ({ blog, handleLike, deleteBlog, userId }) => {
           </button>
         </p>
         <p>Url: {blog.url}</p>
-        {blog.user === userId && (
+        {blog.user.id === userId && (
           <button onClick={() => handleClick(blog)} className="deleteButton">
             Delete
           </button>

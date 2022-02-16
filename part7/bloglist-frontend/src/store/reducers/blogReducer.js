@@ -26,9 +26,9 @@ export const likeBlog = (blog) => {
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case 'INIT_BLOG':
-      return action.blog;
+      return action.blog.sort((a, b) => b.likes - a.likes);
     case 'CREATE_BLOG':
-      return [...state, action.blog];
+      return [...state, action.blog].sort((a, b) => b.likes - a.likes);
     case 'LIKE_BLOG':
       const replacedState = state.map((blog) => {
         if (blog.id === action.blog.id) {
@@ -37,10 +37,10 @@ const blogReducer = (state = [], action) => {
           return blog;
         }
       });
-      return replacedState;
+      return replacedState.sort((a, b) => b.likes - a.likes);
 
     default:
-      return state;
+      return state.sort((a, b) => b.likes - a.likes);
   }
 };
 

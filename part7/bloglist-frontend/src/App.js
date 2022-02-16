@@ -20,8 +20,6 @@ const App = () => {
   useEffect(() => {
     (async function () {
       const blogs = await blogService.getAll();
-      console.log('here again');
-      blogs.sort((a, b) => b.likes - a.likes);
       blogs.map((blog) => {
         blog.visible = false;
       });
@@ -89,29 +87,6 @@ const App = () => {
     dispatch(setNotification('logged out successfully!', 'success', timerID));
   };
 
-  const handleLike = async (blogToLike) => {
-    const increasedLikeBlog = {
-      user: blogToLike.user.id,
-      likes: blogToLike.likes + 1,
-      author: blogToLike.author,
-      title: blogToLike.title,
-      url: blogToLike.url,
-      id: blogToLike.id,
-    };
-
-    const modifiedBlog = await blogService.like(increasedLikeBlog);
-
-    dispatch(likeBlog(modifiedBlog));
-
-    const timerID = setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
-
-    dispatch(
-      setNotification(`you liked ${blogToLike.title}!`, 'success', timerID)
-    );
-  };
-
   const deleteBlog = async (id) => {
     const response = await blogService.remove(id);
 
@@ -166,7 +141,6 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          handleLike={handleLike}
           deleteBlog={deleteBlog}
           userId={user.id}
           className="blog"
