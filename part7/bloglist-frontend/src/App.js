@@ -11,7 +11,7 @@ import {
   setNotification,
 } from './store/reducers/notificationReducer';
 import { useDispatch } from 'react-redux';
-import { initBlog } from './store/reducers/blogReducer';
+import { initBlog, likeBlog } from './store/reducers/blogReducer';
 import { useSelector } from 'react-redux';
 
 const App = () => {
@@ -20,6 +20,7 @@ const App = () => {
   useEffect(() => {
     (async function () {
       const blogs = await blogService.getAll();
+      console.log('here again');
       blogs.sort((a, b) => b.likes - a.likes);
       blogs.map((blog) => {
         blog.visible = false;
@@ -100,18 +101,8 @@ const App = () => {
 
     const modifiedBlog = await blogService.like(increasedLikeBlog);
 
-    //replace the modified blog
-    const temp = [...blogs];
+    dispatch(likeBlog(modifiedBlog));
 
-    temp.map((blog) => {
-      if (blog.id === modifiedBlog.id) {
-        blog.likes = modifiedBlog.likes;
-      }
-    });
-
-    temp.sort((a, b) => b.likes - a.likes);
-
-    setBlogs(temp);
     const timerID = setTimeout(() => {
       dispatch(removeNotification());
     }, 5000);
