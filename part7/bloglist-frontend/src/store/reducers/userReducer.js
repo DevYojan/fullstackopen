@@ -1,22 +1,15 @@
-export const login = (user) => {
+export const getAllUsers = (users) => {
   return {
-    type: 'LOGIN',
-    user,
-  };
-};
-
-export const logout = () => {
-  return {
-    type: 'LOGOUT',
+    type: 'GET_ALL',
+    users,
   };
 };
 
 const userReducer = (state = null, action) => {
   switch (action.type) {
-    case 'LOGIN':
-      return action.user;
-    case 'LOGOUT':
-      return null;
+    case 'GET_ALL':
+      return action.users;
+
     default:
       return state;
   }
