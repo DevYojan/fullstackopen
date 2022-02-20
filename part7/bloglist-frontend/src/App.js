@@ -23,6 +23,7 @@ import {
   Route,
   useNavigate,
 } from 'react-router-dom';
+import User from './components/User';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const App = () => {
 
       <Routes>
         <Route path="/users" element={<Users />}></Route>
+        <Route path="/user/:id" element={<User />}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/createBlog" element={<BlogForm />}></Route>
         <Route path="/" element={<Blogs user={loggedUser} />}></Route>
