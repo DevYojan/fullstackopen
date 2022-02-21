@@ -14,6 +14,7 @@ const Blog = () => {
 
   const location = useLocation();
   const blog = location.state.blog;
+  console.log(blog);
   const userId = location.state.userId;
 
   const [likes, setLikes] = useState(blog.likes);
@@ -78,7 +79,9 @@ const Blog = () => {
 
   return (
     <div className="blog">
-      <div className="title">{blog.title}</div>
+      <div className="title">
+        <h4>{blog.title}</h4>
+      </div>
       <p className="author">Author: {blog.author}</p>
 
       <div className="details">
@@ -88,7 +91,12 @@ const Blog = () => {
             like
           </button>
         </p>
-        <p>Url: {blog.url}</p>
+        <p>
+          Url:{' '}
+          <a href={blog.url} target="_blank" rel="noreferrer">
+            {blog.url}
+          </a>
+        </p>
         {blog.user.id === userId && (
           <button onClick={() => handleDelete(blog)} className="deleteButton">
             Delete

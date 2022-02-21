@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
@@ -29,6 +30,8 @@ import User from './components/User';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   //Checking localStorage for saved logins.
   useEffect(() => {
@@ -88,9 +91,11 @@ const App = () => {
         </p>
       )}
 
-      <Link to="/createBlog">
-        <button>Create New</button>
-      </Link>
+      {location.pathname !== '/createBlog' && (
+        <Link to="/createBlog">
+          <button>Create New</button>
+        </Link>
+      )}
 
       <Routes>
         <Route path="/users" element={<Users />}></Route>

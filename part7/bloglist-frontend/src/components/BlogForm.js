@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import blogService from '../services/blogs';
 import { createBlog } from '../store/reducers/blogReducer';
 import {
   setNotification,
   removeNotification,
 } from '../store/reducers/notificationReducer';
-import { useDispatch } from 'react-redux';
 
 const BlogForm = () => {
   const [title, setTitle] = useState('');
