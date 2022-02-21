@@ -17,7 +17,11 @@ const BlogForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const newBlog = await blogService.create({ title, author, url });
+    const newBlog = await blogService.create({
+      title,
+      author,
+      url,
+    });
 
     dispatch(createBlog(newBlog));
     const timerID = setTimeout(() => {

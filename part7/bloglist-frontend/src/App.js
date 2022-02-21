@@ -70,7 +70,7 @@ const App = () => {
 
   return (
     <div>
-      <ul>
+      <ul className="navbar">
         <li>
           <Link to="/">Home</Link>
         </li>

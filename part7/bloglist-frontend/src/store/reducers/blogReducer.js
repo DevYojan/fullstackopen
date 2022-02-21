@@ -30,6 +30,13 @@ export const likeBlog = (blog) => {
   };
 };
 
+export const addComment = (blog) => {
+  return {
+    type: 'ADD_COMMENT',
+    blog,
+  };
+};
+
 export const deleteBlog = (blogId) => {
   return {
     type: 'DELETE_BLOG',
@@ -46,9 +53,12 @@ const blogReducer = (state = null, action) => {
       return action.blog;
 
     case 'CREATE_BLOG':
-      return [...state, action.blog];
+      return action.blog;
 
     case 'LIKE_BLOG':
+      return action.blog;
+
+    case 'ADD_COMMENT':
       return action.blog;
 
     case 'DELETE_BLOG':

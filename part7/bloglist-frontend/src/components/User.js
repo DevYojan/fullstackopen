@@ -9,9 +9,11 @@ const User = () => {
     return null;
   }
 
+  console.log(user);
+
   return (
     <div>
-      <h2>Yojan Regmi</h2>
+      <h2>{user.name}</h2>
       <h4>Added Blogs</h4>
       <ul>
         {user.blogs.map((blog) => (

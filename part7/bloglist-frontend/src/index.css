@@ -1,8 +1,8 @@
-ul {
+.navbar ul {
   list-style: none;
 }
 
-li {
+.navbar li {
   display: inline;
   margin-right: 1em;
 }

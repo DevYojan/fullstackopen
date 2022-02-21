@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import blogService from '../services/blogs';
-import { likeBlog, deleteBlog, getBlog } from '../store/reducers/blogReducer';
+import {
+  likeBlog,
+  deleteBlog,
+  getBlog,
+  addComment,
+} from '../store/reducers/blogReducer';
 import {
   removeNotification,
   setNotification,
 } from '../store/reducers/notificationReducer';
 
 const Blog = () => {
-  const location = useLocation();
   const blogId = useParams().id;
-  const userId = location.state.userId;
+  const userId = useSelector((state) => state.login).id;
 
   const dispatch = useDispatch();
 
@@ -28,9 +31,35 @@ const Blog = () => {
 
   const [comment, setComment] = useState('');
 
-  const addComment = (event) => {
+  const handleAddComment = async (event) => {
     event.preventDefault();
-    console.log('here');
+    const blogWithAddedComment = {
+      ...blog,
+      comments: [...blog.comments, comment],
+    };
+
+    const modifiedBlogWithAddedcomment = await blogService.modify(
+      blogWithAddedComment
+    );
+
+    const blogUserID = modifiedBlogWithAddedcomment.user;
+    delete modifiedBlogWithAddedcomment.user;
+    modifiedBlogWithAddedcomment.user = {};
+    modifiedBlogWithAddedcomment.user.id = blogUserID;
+
+    dispatch(addComment(modifiedBlogWithAddedcomment));
+
+    const timerID = setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+
+    dispatch(
+      setNotification(
+        `comment '${comment}' added successfully.`,
+        'success',
+        timerID
+      )
+    );
   };
 
   const handleLike = async (blogToLike) => {
@@ -39,8 +68,7 @@ const Blog = () => {
       likes: blogToLike.likes + 1,
     };
 
-    const modifiedBlog = await blogService.like(increasedLikeBlog);
-    console.log(modifiedBlog);
+    const modifiedBlog = await blogService.modify(increasedLikeBlog);
     const blogUserID = modifiedBlog.user;
     delete modifiedBlog.user;
     modifiedBlog.user = {};
@@ -122,7 +150,7 @@ const Blog = () => {
         )}
       </div>
 
-      <h3>Comments</h3>
+      <h4>Comments</h4>
       <form action="">
         <p>
           <input
@@ -131,9 +159,13 @@ const Blog = () => {
             value={comment}
             onChange={({ target }) => setComment(target.value)}
           />
-          <button onSubmit={addComment}>Add Comment</button>
+          <button onClick={handleAddComment}>Add Comment</button>
         </p>
       </form>
+      <ul>
+        {blog.comments.length > 0 &&
+          blog.comments.map((comment) => <li key={comment}>{comment}</li>)}
+      </ul>
     </div>
   );
 };
