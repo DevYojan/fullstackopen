@@ -22,6 +22,7 @@ import {
   Routes,
   Route,
   useNavigate,
+  Link,
 } from 'react-router-dom';
 import User from './components/User';
 
@@ -66,6 +67,17 @@ const App = () => {
 
   return (
     <div>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/blogs">Blogs</Link>
+        </li>
+        <li>
+          <Link to="/users">Users</Link>
+        </li>
+      </ul>
       <h1>blogs</h1>
       <Notification />
       {/* {message && showMessage()} */}
@@ -75,6 +87,10 @@ const App = () => {
           <button onClick={handleLogout}>Logout</button>{' '}
         </p>
       )}
+
+      <Link to="/createBlog">
+        <button>Create New</button>
+      </Link>
 
       <Routes>
         <Route path="/users" element={<Users />}></Route>
