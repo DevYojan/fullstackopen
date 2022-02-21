@@ -19,6 +19,10 @@ const Blogs = ({ user }) => {
 
   const blogs = useSelector((state) => state.blogs);
 
+  if (blogs === null) {
+    return null;
+  }
+
   return (
     <div>
       {blogs.map((blog) => (
@@ -27,7 +31,7 @@ const Blogs = ({ user }) => {
             className="title"
             key={blog.id}
             to={`/blogs/${blog.id}`}
-            state={{ blog, userId: user.id }}
+            state={{ blogId: blog.id, userId: user.id }}
           >
             {blog.title}
           </Link>
