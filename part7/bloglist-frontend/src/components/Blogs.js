@@ -1,14 +1,37 @@
-import React from 'react';
-import Blog from './Blog';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { initBlog } from '../store/reducers/blogReducer';
+import blogService from '../services/blogs';
 
 const Blogs = ({ user }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async function () {
+      const blogs = await blogService.getAll();
+      blogs.map((blog) => {
+        blog.visible = false;
+      });
+      dispatch(initBlog(blogs));
+    })();
+  }, [dispatch]);
+
   const blogs = useSelector((state) => state.blogs);
 
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} userId={user.id} className="blog" />
+        <div className="blog" key={blog.id}>
+          <Link
+            className="title"
+            key={blog.id}
+            to={`/blogs/${blog.id}`}
+            state={{ blog, userId: user.id }}
+          >
+            {blog.title}
+          </Link>
+        </div>
       ))}
     </div>
   );

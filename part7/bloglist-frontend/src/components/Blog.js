@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
 import blogService from '../services/blogs';
 import { likeBlog, deleteBlog } from '../store/reducers/blogReducer';
 import {
@@ -7,9 +9,14 @@ import {
   setNotification,
 } from '../store/reducers/notificationReducer';
 
-const Blog = ({ blog, userId }) => {
-  const [visibility, setVisibility] = useState(false);
+const Blog = () => {
   const dispatch = useDispatch();
+
+  const location = useLocation();
+  const blog = location.state.blog;
+  const userId = location.state.userId;
+
+  const [likes, setLikes] = useState(blog.likes);
 
   const handleLike = async (blogToLike) => {
     const increasedLikeBlog = {
@@ -24,6 +31,7 @@ const Blog = ({ blog, userId }) => {
     modifiedBlog.user.id = blogUserID;
 
     dispatch(likeBlog(modifiedBlog));
+    setLikes(modifiedBlog.likes);
 
     const timerID = setTimeout(() => {
       dispatch(removeNotification());
@@ -68,23 +76,14 @@ const Blog = ({ blog, userId }) => {
     dispatch(setNotification('Blog deleted successfully', 'success', timerID));
   };
 
-  const showOrHide = { display: visibility ? '' : 'none' };
-
-  const toggleVisibility = () => {
-    setVisibility(!visibility);
-  };
-
   return (
     <div className="blog">
       <div className="title">{blog.title}</div>
       <p className="author">Author: {blog.author}</p>
-      <button className="showButton" onClick={toggleVisibility}>
-        {visibility ? 'hide' : 'view'}
-      </button>
 
-      <div style={showOrHide} className="details">
+      <div className="details">
         <p className="likes">
-          Likes: <span id="likes">{blog.likes}</span>
+          Likes: <span id="likes">{likes}</span>
           <button className="likeButton" onClick={() => handleLike(blog)}>
             like
           </button>

@@ -5,6 +5,7 @@ import Notification from './components/Notification';
 import Users from './components/Users';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
+import Blog from './components/Blog';
 
 import blogService from './services/blogs';
 
@@ -14,7 +15,6 @@ import {
   removeNotification,
   setNotification,
 } from './store/reducers/notificationReducer';
-import { initBlog } from './store/reducers/blogReducer';
 import { login, logout } from './store/reducers/loginReducer';
 
 import {
@@ -28,16 +28,6 @@ import User from './components/User';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async function () {
-      const blogs = await blogService.getAll();
-      blogs.map((blog) => {
-        blog.visible = false;
-      });
-      dispatch(initBlog(blogs));
-    })();
-  }, [dispatch]);
 
   //Checking localStorage for saved logins.
   useEffect(() => {
@@ -91,6 +81,8 @@ const App = () => {
         <Route path="/user/:id" element={<User />}></Route>
         <Route path="/login" element={<LoginForm />}></Route>
         <Route path="/createBlog" element={<BlogForm />}></Route>
+        <Route path="/blogs" element={<Blogs user={loggedUser} />}></Route>
+        <Route path="/blogs/:id" element={<Blog />}></Route>
         <Route path="/" element={<Blogs user={loggedUser} />}></Route>
       </Routes>
     </div>
