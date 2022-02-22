@@ -60,8 +60,8 @@ const App = () => {
 
   if (loggedUser === null) {
     return (
-      <div>
-        <h1>Blogs</h1>
+      <div className="ui raised very padded text container segment">
+        <h1 className="header">Blogs</h1>
         <Notification />
         <LoginForm />
       </div>
@@ -69,34 +69,40 @@ const App = () => {
   }
 
   return (
-    <div>
-      <ul className="navbar">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/blogs">Blogs</Link>
-        </li>
-        <li>
-          <Link to="/users">Users</Link>
-        </li>
-      </ul>
-      <h1>blogs</h1>
-      <Notification />
-      {/* {message && showMessage()} */}
-      {loggedUser && (
-        <p>
-          {loggedUser.username} logged in !{' '}
-          <button onClick={handleLogout}>Logout</button>{' '}
-        </p>
-      )}
+    <div className="ui raised very padded text container segment">
+      <div className="ui four item menu">
+        <Link className="item" to="/">
+          Home
+        </Link>
+        <Link className="item" to="/blogs">
+          Blogs
+        </Link>
+        <Link className="item" to="/users">
+          Users
+        </Link>
+        {loggedUser && (
+          <div className="item">
+            {loggedUser.username} logged in !
+            <button className="mini red ui button" onClick={handleLogout}>
+              <i className="small power off icon"></i>
+            </button>
+          </div>
+        )}
+      </div>
 
+      <div className="ui grid">
+        <h1 className="ui header eight wide column">Blogs</h1>
+        {/* {message && showMessage()} */}
+      </div>
+
+      <div className="ui hidden divider"></div>
+
+      <Notification />
       {location.pathname !== '/createBlog' && (
         <Link to="/createBlog">
-          <button>Create New</button>
+          <button className="ui positive button">Create New</button>
         </Link>
       )}
-
       <Routes>
         <Route path="/users" element={<Users />}></Route>
         <Route path="/user/:id" element={<User />}></Route>

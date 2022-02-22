@@ -24,10 +24,10 @@ const Blogs = ({ user }) => {
   }
 
   return (
-    <div>
+    <div className="ui relaxed divided list bloglists">
       {blogs.map((blog) => (
-        <div className="blog" key={blog.id}>
-          <Link className="title" key={blog.id} to={`/blogs/${blog.id}`}>
+        <div className="item" key={blog.id}>
+          <Link className="header" key={blog.id} to={`/blogs/${blog.id}`}>
             {blog.title}
           </Link>
         </div>

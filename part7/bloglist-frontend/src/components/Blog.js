@@ -124,7 +124,7 @@ const Blog = () => {
   }
 
   return (
-    <div className="blog">
+    <div className="ui segment">
       <div className="title">
         <h4>{blog.title}</h4>
       </div>
@@ -133,9 +133,11 @@ const Blog = () => {
       <div className="details">
         <p className="likes">
           Likes: <span id="likes">{blog.likes}</span>
-          <button className="likeButton" onClick={() => handleLike(blog)}>
-            like
-          </button>
+          <i
+            onClick={() => handleLike(blog)}
+            className="ui large thumbs up blue icon likebutton"
+            title="Like Blog"
+          ></i>
         </p>
         <p>
           Url:{' '}
@@ -143,8 +145,8 @@ const Blog = () => {
             {blog.url}
           </a>
         </p>
-        {blog.user.id === userId && (
-          <button onClick={() => handleDelete(blog)} className="deleteButton">
+        {blog.user === userId && (
+          <button onClick={() => handleDelete(blog)} className="ui button red">
             Delete
           </button>
         )}
@@ -152,14 +154,17 @@ const Blog = () => {
 
       <h4>Comments</h4>
       <form action="">
-        <p>
+        <p className="ui fluid labeled input">
           <input
             id="comment"
             type="text"
             value={comment}
             onChange={({ target }) => setComment(target.value)}
+            placeholder="Type your comment here..."
           />
-          <button onClick={handleAddComment}>Add Comment</button>
+          <button className="ui button green" onClick={handleAddComment}>
+            Add Comment
+          </button>
         </p>
       </form>
       <ul>

@@ -8,16 +8,13 @@ const Notification = () => {
     return null;
   }
 
-  const style = {
-    border: '1px solid black',
-    padding: '1em',
-    background: notification.notificationType === 'success' ? 'green' : 'red',
-    fontWeight: 'bold',
-    color: 'white',
-  };
+  const messageType =
+    notification.notificationType === 'success' ? 'positive' : 'negative';
 
   return notification ? (
-    <div style={style}>{notification.notification}</div>
+    <div className={`ui ${messageType} floating message`}>
+      {notification.notification}
+    </div>
   ) : null;
 };
 

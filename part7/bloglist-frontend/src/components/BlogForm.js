@@ -43,20 +43,25 @@ const BlogForm = () => {
 
   return (
     <form action="">
-      <h2>Create Blog</h2>
+      <h4 className="ui header">Create Blog</h4>
 
-      <p>
-        <label htmlFor="">Title : </label>
+      <p className="ui fluid labeled input">
+        <label className="ui label" htmlFor="">
+          Title :{' '}
+        </label>
         <input
           id="title"
           type="text"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
+          className="ui input"
         />
       </p>
 
-      <p>
-        <label htmlFor="">Author : </label>
+      <p className="ui fluid labeled input">
+        <label className="ui label" htmlFor="">
+          Author :{' '}
+        </label>
         <input
           id="author"
           type="text"
@@ -65,8 +70,10 @@ const BlogForm = () => {
         />
       </p>
 
-      <p>
-        <label htmlFor="">Url : </label>
+      <p className="ui fluid labeled input">
+        <label className="ui label" htmlFor="">
+          Url :{' '}
+        </label>
         <input
           id="url"
           type="text"
@@ -75,7 +82,7 @@ const BlogForm = () => {
         />
       </p>
 
-      <button className="submitButton" onClick={handleSubmit}>
+      <button className="ui button primary" onClick={handleSubmit}>
         Create
       </button>
     </form>

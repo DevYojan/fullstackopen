@@ -52,24 +52,34 @@ const LoginForm = () => {
   return (
     <div>
       <form action="">
-        <h2>Login</h2>
-        <label htmlFor="">Username: </label>
-        <input
-          id="username"
-          type="text"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <h3 className="header">Login</h3>
+        <div className="ui fluid labeled input">
+          <label className="ui label" htmlFor="">
+            Username:{' '}
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
         <br />
-        <label htmlFor="">Password: </label>
-        <input
-          id="password"
-          type="text"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <div className="ui fluid labeled input">
+          <label className="ui label" htmlFor="">
+            Password:{' '}
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
         <br />
-        <button onClick={handleLogin}>Login</button>
+        <button className="ui button primary" onClick={handleLogin}>
+          Login
+        </button>
       </form>
     </div>
   );

@@ -20,9 +20,9 @@ const Users = () => {
   }
 
   return (
-    <div>
-      <h3>Users</h3>
-      <table>
+    <div className="users">
+      <h3 className="header">Users</h3>
+      <table className="ui very basic celled table">
         <thead>
           <tr>
             <th>author</th>

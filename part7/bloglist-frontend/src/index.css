@@ -44,3 +44,15 @@ th,
 td {
   padding-right: 1em;
 }
+
+form,
+.users,
+.user,
+.bloglists {
+  margin-top: 2em !important;
+}
+
+.likebutton {
+  margin-left: 1em !important;
+  cursor: pointer;
+}

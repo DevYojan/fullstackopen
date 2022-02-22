@@ -9,17 +9,17 @@ const User = () => {
     return null;
   }
 
-  console.log(user);
-
   return (
-    <div>
+    <div className="user">
       <h2>{user.name}</h2>
       <h4>Added Blogs</h4>
-      <ul>
+      <div className="ui relaxed divided list">
         {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <div className="item" key={blog.id}>
+            {blog.title}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
