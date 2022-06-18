@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries';
 
 const Authors = (props) => {
-  const [authorName, setAuthorName] = useState('');
   const [born, setBorn] = useState('');
+  const [selectedAuthor, setSelectedAuthor] = useState('Select a author from dropdown list');
 
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -23,9 +23,9 @@ const Authors = (props) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    await updateAuthor({ variables: { name: authorName, born: parseInt(born) } });
+    await updateAuthor({ variables: { name: selectedAuthor, born: parseInt(born) } });
 
-    setAuthorName('');
+    setSelectedAuthor('Select a author from dropdown list');
     setBorn('');
   };
 
@@ -54,7 +54,19 @@ const Authors = (props) => {
         <h2>Set authors birth year</h2>
         <form onSubmit={submit}>
           <div>
-            name <input value={authorName} onChange={({ target }) => setAuthorName(target.value)} />
+            Select Author:
+            <select
+              value={selectedAuthor}
+              onChange={({ target }) => setSelectedAuthor(target.value)}
+            >
+              {authors.map((author) => {
+                return (
+                  <option key={author.name} value={author.name}>
+                    {author.name}
+                  </option>
+                );
+              })}
+            </select>
           </div>
           <div>
             born <input value={born} onChange={({ target }) => setBorn(target.value)} />
