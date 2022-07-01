@@ -63,8 +63,8 @@ const resolvers = {
     allBooks: async () => {
       return await Book.find({});
     },
-    allAuthors: () => {
-      return authors.map((a) => a);
+    allAuthors: async () => {
+      return await Author.find({});
     },
   },
 
