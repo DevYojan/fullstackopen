@@ -52,7 +52,10 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
+    bookCount: async () => {
+      const allBooks = await Book.find({});
+      return allBooks.length;
+    },
     authorCount: () => authors.length,
     allBooks: async () => {
       return await Book.find({});
@@ -78,7 +81,6 @@ const resolvers = {
 
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name });
-      console.log(author);
 
       if (author === null) {
         return;
