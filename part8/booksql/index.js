@@ -1,5 +1,5 @@
 const { v1: uuid } = require('uuid');
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, gql, UserInputError } = require('apollo-server');
 const mongoose = require('mongoose');
 const Author = require('./models/author');
 const Book = require('./models/book');
@@ -69,16 +69,23 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: (root) => {
-      return books.filter((book) => book.author === root.name).length;
+    bookCount: async (root) => {
+      const books = await Book.find({ author: root.name });
+      return books.length;
     },
   },
 
   Mutation: {
     addBook: async (root, args) => {
-      console.log({ ...args });
       const newBook = new Book({ ...args });
-      await newBook.save();
+
+      try {
+        await newBook.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        });
+      }
       return newBook;
     },
 
@@ -90,7 +97,13 @@ const resolvers = {
       }
 
       author.born = args.setBornTo;
-      return await author.save();
+      try {
+        return await author.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        });
+      }
     },
   },
 };
