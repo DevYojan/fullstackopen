@@ -5,7 +5,7 @@ const Author = require('./models/author');
 const Book = require('./models/book');
 
 const MONGODB_URI =
-  'mongodb+srv://yojan:yojan@cluster0.je1im.mongodb.net/?retryWrites=true&w=majority';
+  'mongodb+srv://yojan:yojan@cluster0.je1im.mongodb.net/library?retryWrites=true&w=majority';
 
 console.log('Connecting to: ', MONGODB_URI);
 
@@ -34,12 +34,13 @@ const typeDefs = gql`
     name: String!
     born: String
     bookCount: Int!
+    id: ID!
   }
 
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author: String, genre: String): [Book!]!
+    allBooks: [Book!]!
     allAuthors: [Author!]!
   }
 
@@ -53,17 +54,8 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      console.log(args);
-      if (args.genre) {
-        return books.filter((book) => book.genres.includes(args.genre));
-      }
-
-      if (args.author) {
-        return books.filter((book) => book.author === args.author);
-      }
-
-      return books;
+    allBooks: async () => {
+      return await Book.find({});
     },
     allAuthors: () => {
       return authors.map((a) => a);
@@ -84,16 +76,16 @@ const resolvers = {
       return newBook;
     },
 
-    editAuthor: (root, args) => {
-      const author = authors.find((a) => a.name === args.name);
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name });
+      console.log(author);
 
       if (author === null) {
         return;
       }
 
       author.born = args.setBornTo;
-      authors = authors.map((at) => (at.name === author.name ? author : at));
-      return author;
+      return await author.save();
     },
   },
 };
