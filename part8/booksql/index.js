@@ -56,7 +56,10 @@ const resolvers = {
       const allBooks = await Book.find({});
       return allBooks.length;
     },
-    authorCount: () => authors.length,
+    authorCount: async () => {
+      const allAuthors = await Author.find();
+      return allAuthors.length;
+    },
     allBooks: async () => {
       return await Book.find({});
     },
