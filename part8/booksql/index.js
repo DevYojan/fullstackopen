@@ -26,6 +26,14 @@ mongoose
   });
 
 const typeDefs = gql`
+  
+  type Author {
+    name: String!
+    born: String
+    bookCount: Int!
+    id: ID!
+  }
+  
   type Book {
     title: String!
     published: Int!
@@ -44,12 +52,7 @@ const typeDefs = gql`
     value: String!
   }
 
-  type Author {
-    name: String!
-    born: String
-    bookCount: Int!
-    id: ID!
-  }
+  
 
   type Query {
     bookCount: Int!
@@ -78,7 +81,7 @@ const resolvers = {
       return allAuthors.length;
     },
     allBooks: async () => {
-      return await Book.find({});
+      return await Book.find({}).populate('author');
     },
     allAuthors: async () => {
       return await Author.find({});
