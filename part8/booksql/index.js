@@ -26,14 +26,13 @@ mongoose
   });
 
 const typeDefs = gql`
-  
   type Author {
     name: String!
     born: String
     bookCount: Int!
     id: ID!
   }
-  
+
   type Book {
     title: String!
     published: Int!
@@ -51,8 +50,6 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
-
-  
 
   type Query {
     bookCount: Int!
@@ -115,7 +112,7 @@ const resolvers = {
           invalidArgs: args,
         });
       }
-      return newBook;
+      return newBook.populate('author');
     },
 
     editAuthor: async (root, args, context) => {
