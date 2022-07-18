@@ -45,13 +45,13 @@ const App = () => {
         )}
       </div>
 
-      {error !== '' && <Notify error={error} />}
+      {error !== '' && <Notify error={error} setError={setError} />}
 
       <Authors show={page === 'authors'} authors={authors.data} />
 
       <Books show={page === 'books'} books={books.data} />
 
-      <NewBook show={page === 'add'} />
+      <NewBook show={page === 'add'} setError={setError} setPage={setPage} />
 
       <Login show={page === 'login'} setError={setError} setToken={setToken} setPage={setPage} />
     </div>

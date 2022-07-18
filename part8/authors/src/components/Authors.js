@@ -23,8 +23,9 @@ const Authors = (props) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    await updateAuthor({ variables: { name: selectedAuthor, born: parseInt(born) } });
-
+    await updateAuthor({
+      variables: { name: selectedAuthor, born: parseInt(born) },
+    });
     setSelectedAuthor('Select a author from dropdown list');
     setBorn('');
   };
@@ -59,6 +60,7 @@ const Authors = (props) => {
               value={selectedAuthor}
               onChange={({ target }) => setSelectedAuthor(target.value)}
             >
+              <option value=''>Select Author</option>
               {authors.map((author) => {
                 return (
                   <option key={author.name} value={author.name}>
