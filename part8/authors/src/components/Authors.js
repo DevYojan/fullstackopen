@@ -1,81 +1,97 @@
-import { useMutation } from '@apollo/client';
-import { useState } from 'react';
-import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries';
+import React, { useState } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import Select from 'react-select';
+
+export const ALL_AUTHORS = gql`
+  query {
+    allAuthors {
+      name
+      born
+      bookCount
+    }
+  }
+`;
+
+export const EDIT_AUTHOR = gql`
+  mutation editAuthor($name: String!, $born: Int!) {
+    editAuthor(name: $name, setBornTo: $born) {
+      name
+      born
+    }
+  }
+`;
 
 const Authors = (props) => {
+  const result = useQuery(ALL_AUTHORS);
   const [born, setBorn] = useState('');
-  const [selectedAuthor, setSelectedAuthor] = useState('Select a author from dropdown list');
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
+
+  const submitEdit = async (event) => {
+    event.preventDefault();
+    const name = selectedOption.value;
+    editAuthor({
+      variables: {
+        name,
+        born,
+      },
+    });
+  };
 
   if (!props.show) {
     return null;
   }
 
-  if (!props.authors) {
-    return <div>Loading...</div>;
+  if (result.loading) {
+    return <div>loading...</div>;
   }
 
-  const authors = props.authors.allAuthors;
+  const authors = result.data.allAuthors;
 
-  const submit = async (event) => {
-    event.preventDefault();
-
-    await updateAuthor({
-      variables: { name: selectedAuthor, born: parseInt(born) },
-    });
-    setSelectedAuthor('Select a author from dropdown list');
-    setBorn('');
-  };
+  const selectAuthorOptions = authors.map((author) => ({ value: author.name, label: author.name }));
 
   return (
     <div>
-      <div>
-        <h2>authors</h2>
-        <table>
-          <tbody>
-            <tr>
-              <th></th>
-              <th>born</th>
-              <th>books</th>
+      <h2>authors</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th></th>
+            <th>born</th>
+            <th>books</th>
+          </tr>
+          {authors.map((a) => (
+            <tr key={a.name}>
+              <td>{a.name}</td>
+              <td>{a.born}</td>
+              <td>{a.bookCount}</td>
             </tr>
-            {authors.map((a) => (
-              <tr key={a.name}>
-                <td>{a.name}</td>
-                <td>{a.born}</td>
-                <td>{a.bookCount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <h2>Set authors birth year</h2>
-        <form onSubmit={submit}>
-          <div>
-            Select Author:
-            <select
-              value={selectedAuthor}
-              onChange={({ target }) => setSelectedAuthor(target.value)}
-            >
-              <option value=''>Select Author</option>
-              {authors.map((author) => {
-                return (
-                  <option key={author.name} value={author.name}>
-                    {author.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div>
-            born <input value={born} onChange={({ target }) => setBorn(target.value)} />
-          </div>
-          <button type='submit'>Update Author</button>
-        </form>
-      </div>
+          ))}
+        </tbody>
+      </table>
+      <h2>Set birthday</h2>
+      <form onSubmit={submitEdit}>
+        <div>
+          Author
+          <Select
+            defaultValue={selectedOption}
+            onChange={setSelectedOption}
+            options={selectAuthorOptions}
+          />
+        </div>
+        <div>
+          Born
+          <input
+            type='number'
+            value={born}
+            onChange={({ target }) => setBorn(parseInt(target.value))}
+          />
+        </div>
+        <button type='submit'>change</button>
+      </form>
     </div>
   );
 };

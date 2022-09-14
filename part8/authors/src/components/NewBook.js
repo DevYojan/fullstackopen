@@ -1,19 +1,28 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { ADD_BOOK, ALL_BOOKS } from '../queries';
+import React, { useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { ALL_BOOKS } from './Books';
+import { ALL_AUTHORS } from './Authors';
+
+const CREATE_BOOK = gql`
+  mutation createBook($title: String!, $author: String, $published: Int!, $genres: [String!]) {
+    addBook(title: $title, author: $author, published: $published, genres: $genres) {
+      title
+      author {
+        name
+      }
+    }
+  }
+`;
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [published, setPublished] = useState(0);
+  const [author, setAuhtor] = useState('');
+  const [published, setPublished] = useState('');
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
 
-  const [addBook] = useMutation(ADD_BOOK, {
-    onError: (error) => {
-      props.setError(error.graphQLErrors[0].message);
-    },
-    refetchQueries: [{ query: ALL_BOOKS }],
+  const [createBook] = useMutation(CREATE_BOOK, {
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
   });
 
   if (!props.show) {
@@ -23,15 +32,20 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault();
 
-    await addBook({
-      variables: { title, published: parseInt(published), author, genres },
+    createBook({
+      variables: {
+        title,
+        author,
+        published,
+        genres,
+      },
     });
+
     setTitle('');
     setPublished('');
-    setAuthor('');
+    setAuhtor('');
     setGenres([]);
     setGenre('');
-    props.setPage('books');
   };
 
   const addGenre = () => {
@@ -48,14 +62,14 @@ const NewBook = (props) => {
         </div>
         <div>
           author
-          <input value={author} onChange={({ target }) => setAuthor(target.value)} />
+          <input value={author} onChange={({ target }) => setAuhtor(target.value)} />
         </div>
         <div>
           published
           <input
             type='number'
             value={published}
-            onChange={({ target }) => setPublished(target.value)}
+            onChange={({ target }) => setPublished(parseInt(target.value))}
           />
         </div>
         <div>

@@ -1,37 +1,90 @@
-import { useState } from 'react';
-import { ALL_BOOKS } from '../queries';
-import { useQuery } from '@apollo/client';
+import React, { useState, useEffect } from 'react';
+import { gql, useQuery } from '@apollo/client';
+
+export const ALL_BOOKS = gql`
+  query {
+    allBooks {
+      title
+      published
+      genres
+      author {
+        name
+        born
+      }
+    }
+  }
+`;
+
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title
+    published
+    genres
+    author {
+      name
+      born
+    }
+  }
+`;
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`;
 
 const Books = (props) => {
-  const [booksByGenre, setBooksByGenre] = useState([]);
-  const books = useQuery(ALL_BOOKS);
+  const result = useQuery(ALL_BOOKS);
+  const [genre, setGenre] = useState(null);
+  const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState([]);
+  const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
-  const [genre, setGenre] = useState('All Genres');
+  useEffect(() => {
+    if (result.data) {
+      const allBooks = result.data.allBooks;
+      setBooks(allBooks);
+      let genres = ['All genres'];
+      allBooks.forEach((element) => {
+        element.genres.forEach((g) => {
+          if (genres.indexOf(g) === -1) {
+            genres.push(g);
+          }
+        });
+      });
+      setGenres(genres);
+      setSelectedGenre('All genres');
+    }
+  }, [result]);
+
+  useEffect(() => {
+    if (selectedGenre === 'All genres') {
+      setFilteredBooks(books);
+    } else {
+      setFilteredBooks(books.filter((b) => b.genres.indexOf(selectedGenre) !== -1));
+    }
+  }, [books, selectedGenre]);
 
   if (!props.show) {
     return null;
   }
 
-  let genres = [];
-  books.data.allBooks.forEach((book) => {
-    genres = genres.concat(book.genres);
-  });
-
-  genres = [...new Set(genres)];
-
-  const handleGenreSelection = async (e, genre) => {
-    e.preventDefault();
-    if (genre !== null && genre !== 'All Books') {
-      let booksToShow = books.data.allBooks.filter((book) => book.genres.includes(genre));
-      setBooksByGenre(booksToShow);
-    }
-    setGenre(genre);
-  };
+  if (result.loading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <div>
       <h2>books</h2>
-      In genre <strong>{genre}</strong>
+
+      {selectedGenre !== 'All genres' && <div>in genre {selectedGenre}</div>}
+
+      {selectedGenre === 'All genres' && <div>all genres</div>}
+
       <table>
         <tbody>
           <tr>
@@ -39,33 +92,22 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksByGenre.length > 0
-            ? booksByGenre.map((a) => (
-                <tr key={a.title}>
-                  <td>{a.title}</td>
-                  <td>{a.author.name}</td>
-                  <td>{a.published}</td>
-                </tr>
-              ))
-            : books.data &&
-              books.data.allBooks.map((a) => (
-                <tr key={a.title}>
-                  <td>{a.title}</td>
-                  <td>{a.author.name}</td>
-                  <td>{a.published}</td>
-                </tr>
-              ))}
+          {filteredBooks.map((a) => (
+            <tr key={a.title}>
+              <td>{a.title}</td>
+              <td>{a.author.name}</td>
+              <td>{a.published}</td>
+              <td>{a.genres}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div>
         {genres.map((genre) => (
-          <button key={genre} onClick={(e) => handleGenreSelection(e, genre)}>
+          <button key={genre} onClick={() => setSelectedGenre(genre)}>
             {genre}
           </button>
         ))}
-        <button key='allGenres' onClick={(e) => handleGenreSelection(e, 'All Genres')}>
-          all genres
-        </button>
       </div>
     </div>
   );

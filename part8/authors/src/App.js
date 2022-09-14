@@ -1,29 +1,49 @@
-import { useState } from 'react';
-import { useApolloClient, useQuery } from '@apollo/client';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useSubscription, useApolloClient } from '@apollo/client';
+
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
-import Login from './components/Login';
-import { ALL_AUTHORS } from './queries';
-import Notify from './components/Notify';
-import { useEffect } from 'react';
+import LoginForm from './components/LoginForm';
+import Recommended from './components/Recommended';
+
+import { BOOK_ADDED } from './components/Books';
+
+const Notify = ({ errorMessage }) => {
+  if (!errorMessage) {
+    return null;
+  }
+  return <div style={{ color: 'red' }}>{errorMessage}</div>;
+};
 
 const App = () => {
   const [page, setPage] = useState('authors');
-  const [error, setError] = useState('');
   const [token, setToken] = useState(null);
-
-  const authors = useQuery(ALL_AUTHORS);
+  const [favouriteGenre, setFavouriteGenre] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const client = useApolloClient();
 
-  useEffect(() => {
-    //check if user-data exists in localstorage
-    const userToken = localStorage.getItem('user-token');
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      alert(`${subscriptionData.data.bookAdded.title} added successfully!`);
+    },
+  });
 
-    if (userToken !== null) {
-      setToken(userToken);
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem('library-user-token');
+    if (loggedUser) {
+      setToken(loggedUser.token);
+      setFavouriteGenre(loggedUser.favoriteGenre);
+      console.log(loggedUser.favoriteGenre);
     }
-  }, [token]);
+  }, []);
+
+  const notify = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 10000);
+  };
 
   const logout = () => {
     setToken(null);
@@ -36,23 +56,24 @@ const App = () => {
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
-        {token != null && <button onClick={() => setPage('add')}>add book</button>}
-        {token === null ? (
-          <button onClick={() => setPage('login')}>login</button>
-        ) : (
-          <button onClick={logout}>logout</button>
-        )}
+        {token !== null && <button onClick={() => setPage('add')}>add book</button>}
+        <button onClick={() => setPage('recommended')}>recommended</button>
+        <button onClick={() => setPage('login')}>login</button>
+        {token !== null && <button onClick={() => logout()}>logout</button>}
       </div>
 
-      {error !== '' && <Notify error={error} setError={setError} />}
+      <Authors show={page === 'authors'} />
 
-      <Authors show={page === 'authors'} authors={authors.data} />
+      <Books show={page === 'books'} />
 
-      <Books show={page === 'books'} setError={setError} />
+      {token !== null && <NewBook show={page === 'add'} />}
 
-      <NewBook show={page === 'add'} setError={setError} setPage={setPage} />
+      <Recommended show={page === 'recommended'} />
 
-      <Login show={page === 'login'} setError={setError} setToken={setToken} setPage={setPage} />
+      <div>
+        <Notify errorMessage={errorMessage} />
+        <LoginForm show={page === 'login'} setToken={setToken} setError={notify} />
+      </div>
     </div>
   );
 };
