@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
-const schema = mongoose.Schema({
+const schema = new mongoose.Schema({
   username: {
     type: String,
-    minlength: 4,
     required: true,
-  },
-  favouriteGenre: {
-    type: String,
+    unique: true,
     minlength: 3,
+  },
+  favoriteGenre: {
+    type: String,
     required: true,
   },
 });
