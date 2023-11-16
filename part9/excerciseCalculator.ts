@@ -1,3 +1,5 @@
+import { parseExcerciseArgs } from './utils/helper';
+
 interface Analysis {
 	periodLength: number;
 	trainingDays: number;
@@ -70,4 +72,15 @@ const calculateExcercises = (trainingHours: number[], target: number) => {
 	};
 };
 
-console.log(calculateExcercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+	const { hours, target } = parseExcerciseArgs(process.argv);
+	console.log(calculateExcercises(hours, target));
+} catch (error: unknown) {
+	let errorMessage = 'Something went wrong';
+
+	if (error instanceof Error) {
+		errorMessage += ' Error: ' + error.message;
+	}
+
+	console.log(errorMessage);
+}
