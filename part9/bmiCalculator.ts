@@ -1,4 +1,4 @@
-import { parseArgs } from './utils/helper';
+// import { parseArgs } from './utils/helper';
 
 const calculateBmi = (height: number, weight: number): string => {
 	const BMI = weight / ((height / 100) * 2);
@@ -26,15 +26,17 @@ const calculateBmi = (height: number, weight: number): string => {
 	return BmiMessage;
 };
 
-try {
-	const [height, weight] = parseArgs(process.argv);
-	console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-	let errorMessage = 'Something bad happened';
+// try {
+// 	const [height, weight] = parseArgs(process.argv);
+// 	console.log(calculateBmi(height, weight));
+// } catch (error: unknown) {
+// 	let errorMessage = 'Something bad happened';
 
-	if (error instanceof Error) {
-		errorMessage += ' Error: ' + error.message;
-	}
+// 	if (error instanceof Error) {
+// 		errorMessage += ' Error: ' + error.message;
+// 	}
 
-	console.log(errorMessage);
-}
+// 	console.log(errorMessage);
+// }
+
+export default calculateBmi;
