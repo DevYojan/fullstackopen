@@ -14,7 +14,7 @@ const calculateRating = (average: number, target: number): number => {
 	const avgRating = target / average;
 	const grossRating = avgRating / target;
 
-	let rating;
+	let rating = 1;
 
 	if (grossRating >= 0.5) {
 		rating = 1;
@@ -47,10 +47,16 @@ const calculateRatingDescription = (rating: number): string => {
 
 		case 5:
 			return 'Excellento!';
+
+		default:
+			throw new Error('Oops something went wrong');
 	}
 };
 
-const calculateExcercises = (trainingHours: number[], target: number) => {
+const calculateExcercises = (
+	trainingHours: number[],
+	target: number
+): Analysis => {
 	const periodLength = trainingHours.length;
 	const trainingDays = trainingHours.filter((num) => num > 0).length;
 	const totalTrainingHours = trainingHours.reduce((a, b) => {
