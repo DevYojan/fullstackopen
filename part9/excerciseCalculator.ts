@@ -1,4 +1,4 @@
-import { parseExcerciseArgs } from './utils/helper';
+// import { parseExcerciseArgs } from './utils/helper';
 
 interface Analysis {
 	periodLength: number;
@@ -57,6 +57,8 @@ const calculateExcercises = (
 	trainingHours: number[],
 	target: number
 ): Analysis => {
+	console.log(trainingHours, target);
+
 	const periodLength = trainingHours.length;
 	const trainingDays = trainingHours.filter((num) => num > 0).length;
 	const totalTrainingHours = trainingHours.reduce((a, b) => {
@@ -78,15 +80,17 @@ const calculateExcercises = (
 	};
 };
 
-try {
-	const { hours, target } = parseExcerciseArgs(process.argv);
-	console.log(calculateExcercises(hours, target));
-} catch (error: unknown) {
-	let errorMessage = 'Something went wrong';
+// try {
+// 	const { hours, target } = parseExcerciseArgs(process.argv);
+// 	console.log(calculateExcercises(hours, target));
+// } catch (error: unknown) {
+// 	let errorMessage = 'Something went wrong';
 
-	if (error instanceof Error) {
-		errorMessage += ' Error: ' + error.message;
-	}
+// 	if (error instanceof Error) {
+// 		errorMessage += ' Error: ' + error.message;
+// 	}
 
-	console.log(errorMessage);
-}
+// 	console.log(errorMessage);
+// }
+
+export { calculateExcercises };
